@@ -1,35 +1,41 @@
 package hello.springmvc.basic.requestmapping;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 
-// postman 에서 매핑 테스트하기
-@RestController
+@RestController // 기본적으로 html이 아니고 다른걸로 보냄.
+@RequestMapping("/mapping/users")
 public class MappingClassController {
 
-    @GetMapping("/mapping/users")
+    /**
+     * Postman으로 URL 매핑 테스트
+     * 회원 목록 조회: GET
+     * 회원 등록: POST
+     * 회원 조회: GET
+     * 회원수정: PATCH /mapping/users/id1
+     * 회원 삭제: DELETE /mapping/users/id1
+     */
+    @GetMapping
     public String user(){
         return "get users";
     }
 
-    @PostMapping("/mapping/users")
+    @PostMapping
     public String addUser(){
         return "post user";
     }
 
     // 회원 하나 조회
-    @GetMapping("/mapping/users/{userId}")
+    @GetMapping("/{userId}")
     public String findUser(@PathVariable String userId){
         return "get userId=" + userId;
     }
 
-    @PatchMapping("/mapping/users/{userId}")
+    @PatchMapping("/{userId}")
     public String updateUser(@PathVariable String userId){
         return "update userId=" + userId;
     }
 
-    @DeleteMapping("/mapping/users/{userId}")
+    @DeleteMapping("/{userId}")
     public String deleteUser(@PathVariable String userId){
         return "delete userId=" + userId;
     }
