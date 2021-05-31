@@ -1,7 +1,9 @@
 package hello.springmvc.basic.request;
 
+import hello.springmvc.basic.HelloData;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -93,4 +95,47 @@ public class RequestParamController {
         // 단, 파라미터의 값이 1개가 확실할 때 map 쓰기. (MultiValueMap 사용은 드물다)
         return "ok";
     }
+
+    /* @ModelAttribute 적용 전,
+    @ResponseBody
+    @RequestMapping("/model-attribute-v1")
+    public String modelAttributeV1(@RequestParam String username, @RequestParam int age){
+        HelloData helloData = new HelloData();
+        helloData.setUsername(username);
+        helloData.setAge(age);
+
+        log.info("username={}, age={}", helloData.getUsername(), helloData.getAge());
+        log.info("helloData={}", helloData); //toString() 자동 적용
+
+        return "ok";
+    }
+    */
+    @ResponseBody
+    @RequestMapping("/model-attribute-v1")  // @ModelAttribute 적용 결과 (매직매직)
+    public String modelAttributeV1(@ModelAttribute HelloData helloData){
+        /**
+         *  @ModelAttribute 가 HelloData 객체를 자동 생성한다.
+         * URL 요청파라미터의 이름(username, age)으로 객체의 프로퍼티(getter, setter)를 찾는다.
+         *
+         * 바인딩 오류
+         * 바인딩 오류 예시) age 가 int로 들어와야 하는데, 문자열로 들어온다면?
+         */
+        log.info("username={}, age={}", helloData.getUsername(), helloData.getAge());
+        return "ok";
+    }
+
+    // @ModelAttribute 생략 가능!
+    @ResponseBody
+    @RequestMapping("/model-attribute-v2")
+    public String modelAttributeV2(HelloData helloData){
+        /**
+         * @RequestParam도 생략할 수 있더니, @ModelAttribute도 생략 가능하다. 스프링은 어떻게 구분하지?
+         *
+         * @RequestParam 적용 규칙 : String, int ,Integer같은 기본 타입인 경우에 적용.
+         * 그 외에 나머지는 전부 @ModelAttribute로 적용.
+         */
+        log.info("username={}, age={}", helloData.getUsername(), helloData.getAge());
+        return "ok";
+    }
+
 }
